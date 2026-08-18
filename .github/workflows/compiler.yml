@@ -18,7 +18,7 @@ jobs:
      - name: Setup Xcode
        uses: maxim-lobanov/setup-xcode@v1.4.1
        with:
-          xcode-version: 15.1.2
+          xcode-version: 16.2.0
      - name: Set env
        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
