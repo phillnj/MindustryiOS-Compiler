@@ -11,14 +11,14 @@ env:
 
 jobs:
   ios-comp:
-   runs-on: macos-13
+   runs-on: macos-14
    permissions: write-all
    steps:
      - uses: actions/checkout@v4
      - name: Setup Xcode
        uses: maxim-lobanov/setup-xcode@v1.4.1
        with:
-          xcode-version: 14.3.1
+          xcode-version: 15.1.2
      - name: Set env
        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
@@ -31,14 +31,14 @@ jobs:
     
      - name: Build
        run: |
-          git clone --depth=1 --recurse-submodules -b ios-deploy https://github.com/sonphantrung/mindustry
+          git clone --depth=1 --recurse-submodules -b v159.7-branch https://github.com/phillnj/mindustry
           cd mindustry
           echo "BODY=$(git rev-parse HEAD)" >> $GITHUB_ENV
-          gsed -i 's/io.anuke.mindustry/io.anuke.mindustry.be/g' ios/build.gradle
-          gsed -i "s/Mindustry/Mindustry BE/g" ios/build.gradle
+          #gsed -i 's/io.anuke.mindustry/io.anuke.mindustry.be/g' ios/build.gradle
+          #gsed -i "s/Mindustry/Mindustry BE/g" ios/build.gradle
           chmod +x ./gradlew
           ./gradlew pack -PnoLocalArc=true
-          ./gradlew --stacktrace :ios:deploy -Probovm.iosSkipSigning=true -Pbuildversion=${RELEASE_VERSION} -PversionType=bleeding-edge -PnoLocalArc=true -PshowCommitHash=true
+          ./gradlew --stacktrace :ios:deploy -Probovm.iosSkipSigning=true -Pbuildversion=${RELEASE_VERSION} -PversionType=release -PnoLocalArc=true -PshowCommitHash=true
      - name: Release
        run: |
           gh release create ${{ env.RELEASE_VERSION }} --notes ${{ env.BODY }} --title ${{ env.RELEASE_VERSION }}
